@@ -1,0 +1,214 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>INTRODUCCI&Oacute;N AL ESCALONAMIENTO HORIZONTAL DE SE&Ntilde;ALES EN TIEMPO DISCRETO.</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-04-14"><meta name="DC.source" content="intro.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>INTRODUCCI&Oacute;N AL ESCALONAMIENTO HORIZONTAL DE SE&Ntilde;ALES EN TIEMPO DISCRETO.</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">* Compresi&oacute;n horizontal de una se&ntilde;al en tiempo discreto</a></li><li><a href="#2">* Expansi&oacute;n horizontal de una se&ntilde;al en tiempo discreto.</a></li><li><a href="#3">*  Interpolaci&oacute;n.</a></li></ul></div><h2 id="1">* Compresi&oacute;n horizontal de una se&ntilde;al en tiempo discreto</h2><pre class="codeinput"><span class="comment">%Al comprimir una se&ntilde;al x[n]con un factor b (el cu&aacute;l se limita a numeros</span>
+<span class="comment">%enteros) y si n ? [-8,8]</span>
+<span class="comment">%tenemos que para todos lo valores de n</span>
+<span class="comment">%x[bn]=...,x[-2b],x[-b],x[0],x[b],x[2b],...</span>
+<span class="comment">%entonces la nueva funci&oacute;n solo considera entradas que sean m&uacute;ltiplos de b.</span>
+<span class="comment">%Est operaci&oacute;n reduce el n&uacute;mero de alturas de la funci&oacute;n original con un</span>
+<span class="comment">%factor b, es por esto que se le llama "submustreo" de la se&ntilde;al.</span>
+</pre><h2 id="2">* Expansi&oacute;n horizontal de una se&ntilde;al en tiempo discreto.</h2><pre class="codeinput"><span class="comment">%Al expandir una se&ntilde;al x[n] con un factor 1/l donde l se limita a numeros</span>
+<span class="comment">%enteros, y si n ? [-10,10] tenemos que para todos los valores de n</span>
+<span class="comment">%x[n/l]=...,x[-2/l],x[-1/l],x[0],x[1/l],x[2/l],...</span>
+<span class="comment">%si suponemos un l=2, encontramos que tendremos n&uacute;meros enteros en la</span>
+<span class="comment">%entrada de la se&ntilde;al para n={-8,-6,-4,-2,0,2,4,6,8}, y por tratarse de una</span>
+<span class="comment">%se&ntilde;al en tiempo discreto decimos que para el resto de valores de n no hay</span>
+<span class="comment">%una altura definida.</span>
+</pre><h2 id="3">*  Interpolaci&oacute;n.</h2><pre class="codeinput"><span class="comment">%Una vez que tenemos una expansi&oacute;n de una se&ntilde;al en tiempo</span>
+<span class="comment">%discreto, gr&aacute;ficamente podemos notar todos los "huecos" de alturas en los</span>
+<span class="comment">%valores impares de n, para evitar este fen&oacute;meno, se hace la interpolaci&oacute;n,</span>
+<span class="comment">%que consiste en "rellenar" dichos huecos asignandoles alturas haciendo el</span>
+<span class="comment">%promedio del primer valor que se encuentra a su derecha e izquierda. De</span>
+<span class="comment">%forma que si la se&ntilde;al original tiene un n&uacute;mero n de alturas, la se&ntilde;al</span>
+<span class="comment">%interpolada tendr&aacute; l*n, por esto, la operaci&oacute;n de interpolaci&oacute;n tambi&eacute;n se</span>
+<span class="comment">%conoce como sobremuestreo.</span>
+<span class="comment">%nota: cabe se&ntilde;alar que al expandir horizontalmente una funci&oacute;n con el</span>
+<span class="comment">%comando stem, Matlab realiza autom&aacute;ticamente la interpolaci&oacute;n.</span>
+</pre><pre class="codeinput">t=-10:10;
+n=[-8 -6 -4 -2 0 2 4 6 8];
+p=@(t) (sin(t).*((t&gt;-4) &amp; (t&lt;4)));
+x=p(t);
+subplot(2,2,1)
+stem(t,x)
+grid <span class="string">on</span>
+title(<span class="string">'sen(n)[u(n+4)-u(n-4)]'</span>)
+ xlabel(<span class="string">'n'</span>); ylabel(<span class="string">'x[n]'</span>);
+ axis ([-10 10 -1.5 1.5]);
+ ax = gca;
+ ax.XAxisLocation = <span class="string">'origin'</span>; ax.YAxisLocation = <span class="string">'origin'</span>;
+
+y=p(2*t);
+subplot(2,2,2)
+stem(t,y)
+grid <span class="string">on</span>
+title(<span class="string">'submuestreo de x[n]'</span>)
+ xlabel(<span class="string">'n'</span>); ylabel(<span class="string">'x[2n]'</span>);
+axis ([-10 10 -1.5 1.5]);
+ ax = gca;
+ ax.XAxisLocation = <span class="string">'origin'</span>; ax.YAxisLocation = <span class="string">'origin'</span>;
+
+ g=p(.5*n);
+subplot(2,2,3)
+stem(n,g)
+grid <span class="string">on</span>
+title(<span class="string">'expansi&oacute;n de x[n]'</span>)
+ xlabel(<span class="string">'n'</span>); ylabel(<span class="string">'x[n/2]'</span>);
+ axis ([-10 10 -1.5 1.5]);
+ ax = gca;
+ ax.XAxisLocation = <span class="string">'origin'</span>; ax.YAxisLocation = <span class="string">'origin'</span>;
+
+ g=p(.5*t);
+subplot(2,2,4)
+stem(t,g)
+grid <span class="string">on</span>
+title(<span class="string">'interpolaci&oacute;n de x[n]'</span>)
+ xlabel(<span class="string">'n'</span>); ylabel(<span class="string">'x[n/2]'</span>);
+ axis ([-10 10 -1.5 1.5]);
+ ax = gca;
+ ax.XAxisLocation = <span class="string">'origin'</span>; ax.YAxisLocation = <span class="string">'origin'</span>;
+</pre><img vspace="5" hspace="5" src="intro_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% INTRODUCCIÓN AL ESCALONAMIENTO HORIZONTAL DE SEÑALES EN TIEMPO DISCRETO.
+%% * Compresión horizontal de una señal en tiempo discreto 
+%Al comprimir una señal x[n]con un factor b (el cuál se limita a numeros
+%enteros) y si n ? [-8,8]
+%tenemos que para todos lo valores de n
+%x[bn]=...,x[-2b],x[-b],x[0],x[b],x[2b],...
+%entonces la nueva función solo considera entradas que sean múltiplos de b.
+%Est operación reduce el número de alturas de la función original con un
+%factor b, es por esto que se le llama "submustreo" de la señal.
+
+%% * Expansión horizontal de una señal en tiempo discreto.
+
+%Al expandir una señal x[n] con un factor 1/l donde l se limita a numeros
+%enteros, y si n ? [-10,10] tenemos que para todos los valores de n
+%x[n/l]=...,x[-2/l],x[-1/l],x[0],x[1/l],x[2/l],...
+%si suponemos un l=2, encontramos que tendremos números enteros en la
+%entrada de la señal para n={-8,-6,-4,-2,0,2,4,6,8}, y por tratarse de una
+%señal en tiempo discreto decimos que para el resto de valores de n no hay
+%una altura definida. 
+
+%% *  Interpolación.
+
+%Una vez que tenemos una expansión de una señal en tiempo
+%discreto, gráficamente podemos notar todos los "huecos" de alturas en los
+%valores impares de n, para evitar este fenómeno, se hace la interpolación,
+%que consiste en "rellenar" dichos huecos asignandoles alturas haciendo el
+%promedio del primer valor que se encuentra a su derecha e izquierda. De
+%forma que si la señal original tiene un número n de alturas, la señal
+%interpolada tendrá l*n, por esto, la operación de interpolación también se
+%conoce como sobremuestreo.
+%nota: cabe señalar que al expandir horizontalmente una función con el
+%comando stem, Matlab realiza automáticamente la interpolación.
+%%
+
+t=-10:10;
+n=[-8 -6 -4 -2 0 2 4 6 8];
+p=@(t) (sin(t).*((t>-4) & (t<4)));
+x=p(t);
+subplot(2,2,1)
+stem(t,x)
+grid on
+title('sen(n)[u(n+4)-u(n-4)]')
+ xlabel('n'); ylabel('x[n]');
+ axis ([-10 10 -1.5 1.5]);
+ ax = gca;
+ ax.XAxisLocation = 'origin'; ax.YAxisLocation = 'origin';
+ 
+y=p(2*t);
+subplot(2,2,2)
+stem(t,y)
+grid on
+title('submuestreo de x[n]')
+ xlabel('n'); ylabel('x[2n]');
+axis ([-10 10 -1.5 1.5]);
+ ax = gca;
+ ax.XAxisLocation = 'origin'; ax.YAxisLocation = 'origin';
+ 
+ g=p(.5*n);
+subplot(2,2,3)
+stem(n,g)
+grid on
+title('expansión de x[n]')
+ xlabel('n'); ylabel('x[n/2]');
+ axis ([-10 10 -1.5 1.5]);
+ ax = gca;
+ ax.XAxisLocation = 'origin'; ax.YAxisLocation = 'origin';
+ 
+ g=p(.5*t);
+subplot(2,2,4)
+stem(t,g)
+grid on
+title('interpolación de x[n]')
+ xlabel('n'); ylabel('x[n/2]');
+ axis ([-10 10 -1.5 1.5]);
+ ax = gca;
+ ax.XAxisLocation = 'origin'; ax.YAxisLocation = 'origin';
+##### SOURCE END #####
+--></body></html>
